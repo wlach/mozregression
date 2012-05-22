@@ -58,6 +58,9 @@ from mozInstall import rmdirRecursive
 from utils import strsplit, download_url, get_date, get_platform
 
 class Nightly(object):
+    _monthlinks = {}
+    lastdest = None
+
     def __init__(self, repo_name=None):
         platform=get_platform()
         if platform['name'] == "Windows":
@@ -79,8 +82,6 @@ class Nightly(object):
             self.processName = self.name + "-bin"
             self.binary = "moznightlyapp/Mozilla.app/Contents/MacOS/" + self.name + "-bin"
         self.repo_name = repo_name
-        self._monthlinks = {}
-        self.lastdest = None
 
     def __del__(self):
         # cleanup
@@ -202,9 +203,15 @@ class FennecNightly(Nightly):
     appName = 'mobile'
     name = 'fennec'
     profileClass = FirefoxProfile
+    buildRegex = ".*android-arm.apk"
+    processName = None
+    binary = None
+
+    def __init__(self, repo_name=None):
+        self.repo_name = repo_name
 
     def getRepoName(self, date):
-      return "mozilla-central-linux"
+      return "mozilla-central-android"
 
 class NightlyRunner(object):
     def __init__(self, addons=None, appname="firefox", repo_name=None,
